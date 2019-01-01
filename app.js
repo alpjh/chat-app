@@ -29,6 +29,16 @@ app.get('/', function(request, response) {
   })
 })
 
+io.sockets.on('connection', function(socket) {
+  console.log('유저 접속 됨')
+  socket.on('send', function(data) {
+    console.log ('전달된 메시지:', data.msg)
+  })
+  socket.on('disconnect', function() {
+    console.log('접속 종료')
+  })
+})
+
 server.listen(8080, function() {
   console.log('서버 실행 .. ')
 })
