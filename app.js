@@ -30,12 +30,30 @@ app.get('/', function(request, response) {
 })
 
 io.sockets.on('connection', function(socket) {
-  console.log('유저 접속 됨')
-  socket.on('send', function(data) {
-    console.log ('전달된 메시지:', data.msg)
+  
+  socket.on('newUser', function(name) {
+    console.log(name + ' 님이 접속하였습니다.')
+
+    //소켓이름 저장
+    socket.name = name
+    //다른 소켓에게 전송
+    io.sockets.emit('update', {type: 'connect', name: 'SERVER', message: name + '님이 접속하였습니다.'})
   })
+
+  socket.on('message', function(data) {
+    //받은 데이터를 누가 보냈는지 이름 추가
+    data.name = socket.name
+
+    console.log(data)
+    //보낸사람을 제외한 다른 유저에게 전송
+    socket.broadcast.emit('update', data);
+  })
+
+  //접속종료
   socket.on('disconnect', function() {
-    console.log('접속 종료')
+    console.log(socket.name + '님이 나갔습니다.')
+
+    socket.broadcast.emit('update', {type: 'disconnect', name: 'SERVER', message: socket.name + '님이 나가셨습니다.'})
   })
 })
 

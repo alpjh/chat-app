@@ -2,8 +2,19 @@ var socket = io()
 
 //접속했을때 실행
 socket.on('connect', function() {
-    var input = document.getElementById('test')
-    input.value = '접속 됨'
+    var name = prompt('반갑습니다!', '')
+
+    //이름이 빈칸인 경우
+    if(!name) {
+        name = '익명'
+    }
+
+    //서버에 새로운 유저가 왔다고 알림
+    socket.emit('newUser', name)
+})
+
+socket.on('update', function(data) {
+    console.log(`${data.name}: ${data.message}`)
 })
 
 //전송함수
@@ -13,5 +24,5 @@ function send() {
     //빈칸으로 변경
     document.getElementById('test').value = ''
     //서버로 data와 send 이벤트 전달
-    socket.emit('send', {msg:message})
+    socket.emit('message', {type: 'message', message: message})
 }
