@@ -1,28 +1,20 @@
-import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+const express = require('express')
 
-class App extends Component {
-  render() {
-    return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
-      </div>
-    );
-  }
-}
+const socket = require('socket.io')
 
-export default App;
+const http = require('http')
+
+const app = express()
+
+const server = http.createServer(app)
+
+const io = socket(server)
+
+app.get('/', function(request, response) {
+  console.log('유저가 / 으로 접속!')
+  response.send('Hello, Express Server!')
+})
+
+server.listen(8080, function() {
+  console.log('서버 실행 .. ')
+})
